@@ -1,11 +1,5 @@
 import * as XLSX from "xlsx";
 
-export const config = {
-  api: {
-    bodyParser: false, // Necesario para manejar archivos de forma manual
-  },
-};
-
 export async function POST(req) {
   try {
     const formData = await req.formData(); // Capturamos el formData nativo

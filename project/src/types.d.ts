@@ -9,9 +9,5 @@ export interface numeroClase {
   clase: number;
 }
 
-export interface Sturges {
-  total: number;
-  clase: number;
-  rango: number;
-  amplitud: number;
-}
+export type Distribucion_frecuencia_Props = Rango &
+  Omit<numeroClase, "clase"> & { amplitud: number };
