@@ -1,6 +1,6 @@
 import React from "react";
 
-const NumberTable = ({ numbers, children }) => {
+const NumberTable = ({ numbers, children }: {numbers:number[], children: React.ReactNode}) => {
     return (
         <div className="flex flex-col gap-4">
             <h1 className="text-2xl text-center">Datos procesados ordenados:</h1>

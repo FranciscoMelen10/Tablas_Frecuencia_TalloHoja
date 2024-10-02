@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 
 // Shadcn Components
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,8 @@ import {
 
 // Types
 import { numeroClase, Rango } from "@/types";
+import { limites_clases, marca_clase } from "@/utils/limites_reales";
+import TablaGeneral from "@/components/TablaGeneral";
 
 export default function Home() {
   const [file, setFile] = useState(null);
@@ -30,6 +32,10 @@ export default function Home() {
   const [rango, setRango] = useState<Rango | null>(null);
   const [numeroClases, setNumeroClases] = useState<numeroClase | null>(null);
   const [amplitud, setAmplitud] = useState<any>(null);
+
+  const [limitesReales, setLimitesReales] = useState<any>(null);
+  const [limitesClase, setLimitesClase] = useState<any>(null);
+  const [marca, setMarca] = useState<any>(null);
 
   const handleFileChange = (e: any) => {
     setFile(e.target.files[0]);
@@ -86,8 +92,36 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    if (rango && amplitud && numeroClases) {
+      setLimitesReales(
+        limites_clases({
+          min: rango?.minimo,
+          max: rango?.maximo,
+          amplitud: Math.round(amplitud),
+          isReal: true,
+        })
+      );
+      setLimitesClase(
+        limites_clases({
+          min: rango?.minimo,
+          max: rango?.maximo,
+          amplitud: Math.round(amplitud),
+          isReal: false,
+        })
+      );
+      setMarca(
+        marca_clase({
+          min: rango?.minimo,
+          amplitud: Math.round(amplitud),
+          numero_clase: numeroClases?.clase,
+        })
+      );
+    }
+  }, [rango, amplitud, numeroClases]);
+
   return (
-    <div className="flex w-screen items-center justify-center flex-col">
+    <div className="flex items-center justify-center flex-col gap-10">
       <form
         onSubmit={handleSubmit}
         className="flex h-screen items-center justify-center flex-col"
@@ -120,6 +154,17 @@ export default function Home() {
               />
             )}
           </NumberTable>
+        </div>
+      )}
+
+      {limitesReales && limitesReales && marca && (
+        <div className="flex flex-col justify-center gap-3 ">
+          <h1 className="text-2xl text-center">Datos procesados ordenados:</h1>
+          <TablaGeneral
+            limites_clases={limitesClase}
+            limites_reales={limitesReales}
+            marca_clase={marca}
+          />
         </div>
       )}
     </div>
