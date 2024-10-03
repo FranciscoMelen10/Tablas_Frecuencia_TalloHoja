@@ -7,10 +7,14 @@ export const limites_clases = ({
   max,
   amplitud,
   isReal = false,
-}: LimitesClases): string[] => {
-    console.log("min", min);
-    console.log("max", max);
-    console.log("amplitud", amplitud);
+}: LimitesClases): {
+  limites: string[];
+  intervalos: Array<{
+    limite_inferior: number;
+    limite_superior: number;
+    contador: number;
+  }>;
+} => {
   // Estructura: [ min - 0.5 - min + amplitud - 0.5 ])
 
   // Si es una clase real, se resta 0.5 a los limites
@@ -18,18 +22,32 @@ export const limites_clases = ({
   const real = isReal ? 0.5 : 0;
 
   let limites: string[] = [];
+  let intervalos: Array<{
+    limite_inferior: number;
+    limite_superior: number;
+    contador: number;
+  }> = [];
   let limite_inferior = min;
   let limite_superior = min + amplitud;
 
   while (limite_superior < max + amplitud) {
+    // Para la tabla de limites
     limites.push(`[ ${limite_inferior - real} - ${limite_superior + real} )`);
+
+    // Para la tabla de frecuencia
+    intervalos.push({
+      limite_inferior: limite_inferior - real,
+      limite_superior: limite_superior + real,
+      contador: 0,
+    });
     limite_inferior = limite_superior + 1;
     limite_superior += amplitud + 1;
-    console.log("limite_inferior", limite_inferior);
-    console.log("limite_superior", limite_superior);
   }
 
-  return limites;
+  return {
+    limites: limites,
+    intervalos: intervalos,
+  };
 };
 
 export const marca_clase = ({ min, amplitud, numero_clase }: MarcaClase) => {
@@ -44,7 +62,6 @@ export const marca_clase = ({ min, amplitud, numero_clase }: MarcaClase) => {
   for (let i = 0; i < numero_clase; i++) {
     marcas_clase.push((marcas[i] + marcas[i + 1]) / 2 - 0.5);
   }
-  console.log("marcas_clase", marcas_clase);
 
   return marcas_clase;
 };

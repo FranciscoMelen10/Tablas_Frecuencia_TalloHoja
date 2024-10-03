@@ -1,11 +1,12 @@
 type TablaItemProps = {
   datos: (string | number)[];
+  title: string;
 };
 
-export default function TablaItem({ datos = [] }: TablaItemProps) {
+export default function TablaItem({ datos = [], title }: TablaItemProps) {
   return (
     <div className="flex flex-col gap-2">
-      <h5 className="text-center">Límites de Clase</h5>
+      <h5 className="text-center">{title}</h5>
       {datos.map((data, index) => (
         <div
           key={index}

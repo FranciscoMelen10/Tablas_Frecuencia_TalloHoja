@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // Shadcn Components
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import NumberTable from "@/components/NumberTable";
 import Distribucion_frecuencia from "../components/Distribucion_frecuencia";
 
 // Utils
-import ordenarLista from "@/utils";
+import ordenarLista, { obtenerTalloHoja } from "@/utils";
 import {
   obtenerRango,
   obtenerAmplitud,
@@ -23,19 +23,31 @@ import {
 import { numeroClase, Rango } from "@/types";
 import { limites_clases, marca_clase } from "@/utils/limites_reales";
 import TablaGeneral from "@/components/TablaGeneral";
+import TablaTalloHoja from "@/components/TablaTalloHoja";
 
 export default function Home() {
+
+  // Manejar el archivo
   const [file, setFile] = useState(null);
   const [data, setData] = useState<number[] | null>(null);
-  const [listaOrdenada, setListaOrdenada] = useState<number[] | null>(null);
   const [error, setError] = useState<any>(null);
+
+  // Datos de la distribución de frecuencia
+  const [listaOrdenada, setListaOrdenada] = useState<number[] | null>(null);
   const [rango, setRango] = useState<Rango | null>(null);
   const [numeroClases, setNumeroClases] = useState<numeroClase | null>(null);
   const [amplitud, setAmplitud] = useState<any>(null);
 
+  // Datos de la tabla general
   const [limitesReales, setLimitesReales] = useState<any>(null);
   const [limitesClase, setLimitesClase] = useState<any>(null);
   const [marca, setMarca] = useState<any>(null);
+
+  // Datos de la tabla de tallo y hoja
+  const [talloHoja, setTalloHoja] = useState<any>(null);
+
+  // frecuencia
+  const [frecuencia, setFrecuencia] = useState<any>(null);
 
   const handleFileChange = (e: any) => {
     setFile(e.target.files[0]);
@@ -100,7 +112,7 @@ export default function Home() {
           max: rango?.maximo,
           amplitud: Math.round(amplitud),
           isReal: true,
-        })
+        }).limites
       );
       setLimitesClase(
         limites_clases({
@@ -108,7 +120,7 @@ export default function Home() {
           max: rango?.maximo,
           amplitud: Math.round(amplitud),
           isReal: false,
-        })
+        }).limites
       );
       setMarca(
         marca_clase({
@@ -120,8 +132,14 @@ export default function Home() {
     }
   }, [rango, amplitud, numeroClases]);
 
+  useEffect(() => {
+    if (listaOrdenada) {
+      setTalloHoja(obtenerTalloHoja(listaOrdenada));
+    }
+  }, [listaOrdenada]);
+
   return (
-    <div className="flex items-center justify-center flex-col gap-10">
+    <div className="flex items-center justify-center flex-col gap-16">
       <form
         onSubmit={handleSubmit}
         className="flex h-screen items-center justify-center flex-col"
@@ -157,9 +175,16 @@ export default function Home() {
         </div>
       )}
 
+      {talloHoja && (
+        <div className="flex flex-col justify-center gap-3">
+          <h1 className="text-2xl text-center">Tallo - Hoja</h1>
+          <TablaTalloHoja datos={talloHoja} />
+        </div>
+      )}
+
       {limitesReales && limitesReales && marca && (
         <div className="flex flex-col justify-center gap-3 ">
-          <h1 className="text-2xl text-center">Datos procesados ordenados:</h1>
+          <h1 className="text-2xl text-center">Tabla general:</h1>
           <TablaGeneral
             limites_clases={limitesClase}
             limites_reales={limitesReales}

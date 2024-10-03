@@ -12,10 +12,10 @@ const TablaGeneral = ({
 //   frecuencia_porcentual,
 TablaGeneralProps) => {
   return (
-    <div className="flex gap-4">
-      <TablaItem datos={limites_clases} />
-      <TablaItem datos={limites_reales} />
-      <TablaItem datos={marca_clase} />
+    <div className="flex gap-4 bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-5">
+      <TablaItem title="Limites de clases reales" datos={limites_reales} />
+      <TablaItem title="Limites de clases" datos={limites_clases} />
+      <TablaItem title="Marca de clases" datos={marca_clase} />
     </div>
   );
 };
