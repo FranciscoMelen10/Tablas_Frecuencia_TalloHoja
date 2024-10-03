@@ -26,12 +26,13 @@ export interface MarcaClase {
 }
 
 export interface TablaGeneralProps {
+  lista: number[]; // lista de datos
   limites_reales: (string | number)[];
   limites_clases: (string | number)[];
   marca_clase: (string | number)[];
-  // f?: number[]; // otras propiedades opcionales
-  // frecuencia_relativa?: number[];
-  // frecuencia_acumulada?: number[];
-  // frecuencia_porcentual?: number[];
+  f: Array<{
+    limite_inferior: number;
+    limite_superior: number;
+    contador: number;
+  }>;
 }
-

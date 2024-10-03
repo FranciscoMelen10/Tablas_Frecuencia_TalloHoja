@@ -26,7 +26,6 @@ import TablaGeneral from "@/components/TablaGeneral";
 import TablaTalloHoja from "@/components/TablaTalloHoja";
 
 export default function Home() {
-
   // Manejar el archivo
   const [file, setFile] = useState(null);
   const [data, setData] = useState<number[] | null>(null);
@@ -129,6 +128,15 @@ export default function Home() {
           numero_clase: numeroClases?.clase,
         })
       );
+
+      setFrecuencia(
+        limites_clases({
+          min: rango?.minimo,
+          max: rango?.maximo,
+          amplitud: Math.round(amplitud),
+          isReal: false,
+        }).intervalos
+      );
     }
   }, [rango, amplitud, numeroClases]);
 
@@ -182,13 +190,14 @@ export default function Home() {
         </div>
       )}
 
-      {limitesReales && limitesReales && marca && (
+      {limitesReales && limitesReales && marca && listaOrdenada && frecuencia && (
         <div className="flex flex-col justify-center gap-3 ">
-          <h1 className="text-2xl text-center">Tabla general:</h1>
           <TablaGeneral
+            lista={listaOrdenada}
             limites_clases={limitesClase}
             limites_reales={limitesReales}
             marca_clase={marca}
+            f={frecuencia}
           />
         </div>
       )}
