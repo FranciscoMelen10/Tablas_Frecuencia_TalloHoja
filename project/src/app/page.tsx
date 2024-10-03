@@ -24,6 +24,7 @@ import { numeroClase, Rango } from "@/types";
 import { limites_clases, marca_clase } from "@/utils/limites_reales";
 import TablaGeneral from "@/components/TablaGeneral";
 import TablaTalloHoja from "@/components/TablaTalloHoja";
+import Image from "next/image";
 
 export default function Home() {
   // Manejar el archivo
@@ -148,6 +149,17 @@ export default function Home() {
 
   return (
     <div className="flex items-center justify-center flex-col gap-16">
+      <div className="absolute top-0 left-0 flex items-center gap-5 p-3">
+        <Image
+          src="/Logo.jpg"
+          width={80}
+          height={80}
+          alt="Logo"
+          loading="lazy"
+          className="rounded-full"
+        />
+        <h5 className="text-center text-xl">Creador: FranciscoMelen10</h5>
+      </div>
       <form
         onSubmit={handleSubmit}
         className="flex h-screen items-center justify-center flex-col"
@@ -190,17 +202,21 @@ export default function Home() {
         </div>
       )}
 
-      {limitesReales && limitesReales && marca && listaOrdenada && frecuencia && (
-        <div className="flex flex-col justify-center gap-3 ">
-          <TablaGeneral
-            lista={listaOrdenada}
-            limites_clases={limitesClase}
-            limites_reales={limitesReales}
-            marca_clase={marca}
-            f={frecuencia}
-          />
-        </div>
-      )}
+      {limitesReales &&
+        limitesReales &&
+        marca &&
+        listaOrdenada &&
+        frecuencia && (
+          <div className="flex flex-col justify-center gap-3 ">
+            <TablaGeneral
+              lista={listaOrdenada}
+              limites_clases={limitesClase}
+              limites_reales={limitesReales}
+              marca_clase={marca}
+              f={frecuencia}
+            />
+          </div>
+        )}
     </div>
   );
 }
