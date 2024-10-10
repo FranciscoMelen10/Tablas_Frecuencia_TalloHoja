@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Shadcn Components
 import { Button } from "@/components/ui/button";
@@ -90,6 +90,14 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!file) {
+      setData(null);
+      setError(null);
+    }
+
+  }, [file]);
 
   const handleFileChange = (e: any) => {
     setFile(e.target.files[0]);

@@ -13,9 +13,6 @@ export async function POST(req) {
       frecuencia,
     } = await req.json(); // Aquí se obtienen los datos enviados por el frontend
 
-    console.log("frecuencia", frecuencia);
-    console.log("frecuenciaRelativa", frecuenciaRelativa);
-
     // Combinar los datos en un solo objeto para el Excel
     const datos = limitesReales.map((_, index) => ({
       "Limites de clases reales": limitesReales[index],
@@ -28,7 +25,6 @@ export async function POST(req) {
         2
       )}%`,
     }));
-    console.log(datos);
 
     // Crear el libro de trabajo (workbook) y la hoja (worksheet) a partir de los datos enviados
     const worksheet = XLSX.utils.json_to_sheet(datos);
