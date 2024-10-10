@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Shadcn Components
 import { Button } from "@/components/ui/button";
@@ -28,12 +28,68 @@ export default function Home() {
     marca,
     frecuencia,
     setData,
-    listaOrdenada
+    listaOrdenada,
+    frecuenciaAcumulada,frecuenciaRelativa
   } = useTable();
 
   // Manejar el archivo
   const [file, setFile] = useState(null);
   const [error, setError] = useState<any>(null);
+
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerateExcel = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/createExcel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          limitesReales: limitesReales,
+          limitesClase: limitesClase,
+          marca: marca,
+          frecuenciaAcumulada: frecuenciaAcumulada,
+          frecuenciaRelativa: frecuenciaRelativa,
+          frecuencia: frecuencia,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Error al generar el archivo Excel");
+      }
+
+      // Obtener el archivo Excel como blob
+      const blob = await res.blob();
+
+      // Crear un enlace de descarga
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Tabla de frecuencia.xlsx";
+      document.body.appendChild(link);
+      link.click();
+
+      // Limpiar después de la descarga
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Excel generado exitosamente",
+        duration: 2000,
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Hubo un error al generar el Excel",
+        variant: "destructive",
+        duration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFileChange = (e: any) => {
     setFile(e.target.files[0]);
@@ -141,10 +197,24 @@ export default function Home() {
         </div>
       )}
 
-      {limitesReales && marca && listaOrdenada && frecuencia && limitesClase&& (
-        <div className="flex flex-col justify-center gap-3 ">
-          <TablaGeneral />
-        </div>
+      {limitesReales &&
+        marca &&
+        listaOrdenada &&
+        frecuencia &&
+        limitesClase && (
+          <div className="flex flex-col justify-center gap-3 ">
+            <TablaGeneral />
+          </div>
+        )}
+      {data && (
+        <Button
+          variant="default"
+          className="rounded-xl"
+          onClick={handleGenerateExcel}
+          disabled={loading}
+        >
+          {loading ? "Generando..." : "Generar Excel"}
+        </Button>
       )}
     </div>
   );

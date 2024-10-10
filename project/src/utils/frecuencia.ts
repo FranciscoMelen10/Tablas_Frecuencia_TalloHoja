@@ -5,9 +5,7 @@ export const obtenerFrecuencia = (
     limite_superior: number;
     contador: number;
   }>
-): {
-  intervalos: object[];
-} => {
+) => {
   // Contar cuántos números caen en cada intervalo
   intervalos.forEach((intervalo) => {
     intervalo.contador = 0; // Inicializa el contador para cada intervalo
@@ -24,5 +22,5 @@ export const obtenerFrecuencia = (
     });
   });
 
-  return { intervalos: intervalos };
+  return intervalos
 };

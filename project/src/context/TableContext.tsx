@@ -31,6 +31,8 @@ export const TableProvider = ({ children }: any) => {
 
   // frecuencia
   const [frecuencia, setFrecuencia] = useState<any>(null);
+  const [frecuenciaAcumulada, setFrecuenciaAcumulada] = useState<any>(null);
+  const [frecuenciaRelativa, setFrecuenciaRelativa] = useState<any>(null);
 
   useEffect(() => {
     if (data) {
@@ -76,7 +78,6 @@ export const TableProvider = ({ children }: any) => {
         }).intervalos
       );
     }
-
   }, [rango, amplitud, numeroClases]);
 
   useEffect(() => {
@@ -84,6 +85,10 @@ export const TableProvider = ({ children }: any) => {
       setTalloHoja(obtenerTalloHoja(listaOrdenada));
     }
   }, [listaOrdenada]);
+
+    // Funciones para actualizar frecuencias
+    const obtenerFrecuencias = (data: any) => setFrecuenciaAcumulada(data);
+    const obtenerFrecuenciaRelativa = (data: any) => setFrecuenciaRelativa(data);
 
   return (
     <TableContext.Provider
@@ -98,7 +103,11 @@ export const TableProvider = ({ children }: any) => {
         limitesReales,
         frecuencia,
         marca,
-        listaOrdenada
+        listaOrdenada,
+        frecuenciaAcumulada,
+        obtenerFrecuencias,
+        obtenerFrecuenciaRelativa,
+        frecuenciaRelativa,
       }}
     >
       {children}
