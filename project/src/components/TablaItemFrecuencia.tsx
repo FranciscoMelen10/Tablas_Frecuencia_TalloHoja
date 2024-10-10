@@ -79,7 +79,7 @@ export default function TablaItemFrecuencia({
       </div>
 
       <div className="flex flex-col gap-2">
-        <h5 className="text-center text-sm">Frecuencia Relativa</h5>
+        <h5 className="text-center text-sm">Fr</h5>
         {intervalos.map((data, index) => (
           <p
             key={index}
@@ -124,7 +124,7 @@ export default function TablaItemFrecuencia({
             key={index}
             className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
           >
-            {`(${data} - ${promedio})`}
+            {`(${data} - ${promedio.toFixed(2)})`}
           </p>
         ))}
       </div>
