@@ -29,7 +29,8 @@ export default function Home() {
     frecuencia,
     setData,
     listaOrdenada,
-    frecuenciaAcumulada,frecuenciaRelativa
+    frecuenciaAcumulada,
+    frecuenciaRelativa,
   } = useTable();
 
   // Manejar el archivo
@@ -96,7 +97,6 @@ export default function Home() {
       setData(null);
       setError(null);
     }
-
   }, [file]);
 
   const handleFileChange = (e: any) => {
@@ -214,6 +214,7 @@ export default function Home() {
             <TablaGeneral />
           </div>
         )}
+        
       {data && (
         <Button
           variant="default"

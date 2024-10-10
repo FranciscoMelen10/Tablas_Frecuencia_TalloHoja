@@ -42,7 +42,7 @@ export default function TablaItemFrecuencia({
     total += frecuencias[i].contador;
   }
 
-  const promedio = total_XiFi / datos.length;
+  const promedio = total_XiFi / total;
 
   // Actualizar la frecuencia acumulada usando useEffect para evitar el ciclo infinito
   useEffect(() => {
@@ -124,7 +124,7 @@ export default function TablaItemFrecuencia({
             key={index}
             className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
           >
-            {`(${data} - ${total_XiFi})`}
+            {`(${data} - ${promedio})`}
           </p>
         ))}
       </div>
@@ -135,7 +135,7 @@ export default function TablaItemFrecuencia({
             key={index}
             className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
           >
-            {`(${data - total_XiFi})²`}
+            {`(${(data - promedio).toFixed(2)})²`}
           </p>
         ))}
       </div>
@@ -147,7 +147,7 @@ export default function TablaItemFrecuencia({
             key={index}
             className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
           >
-            {`${intervalos[index].contador * Math.pow(data - total_XiFi, 2)}`}
+            {`${(intervalos[index].contador * Math.pow(data - promedio, 2)).toFixed(2)}`}
           </p>
         ))}
       </div>
