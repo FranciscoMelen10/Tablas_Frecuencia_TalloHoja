@@ -61,7 +61,7 @@ export default function TablaItemFrecuencia({
             key={index}
             className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
           >
-            {data.contador / datos.length}
+            {(data.contador / datos.length).toFixed(2)}
           </div>
         ))}
       </div>

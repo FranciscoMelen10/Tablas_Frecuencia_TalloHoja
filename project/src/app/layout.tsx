@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Saira } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
+import { TableProvider } from "@/context/TableContext";
 
 export const metadata: Metadata = {
   title: "Estadistica - FranciscoMelen10",
   description: "Estadistica - FranciscoMelen10",
   icons: {
     icon: "/Logo.ico",
-  }
+  },
 };
 
 const getSarai = Saira({
@@ -24,10 +25,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={getSarai.className}>
-        <main className="flex flex-col bg-black text-white p-5 ">
-          {children}
-        </main>
-        <Toaster />
+        <TableProvider>
+          <main className="flex flex-col bg-black text-white p-5 ">
+            {children}
+          </main>
+          <Toaster />
+        </TableProvider>
       </body>
     </html>
   );

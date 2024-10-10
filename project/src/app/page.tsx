@@ -11,43 +11,29 @@ import { toast } from "@/hooks/use-toast";
 import NumberTable from "@/components/NumberTable";
 import Distribucion_frecuencia from "../components/Distribucion_frecuencia";
 
-// Utils
-import ordenarLista, { obtenerTalloHoja } from "@/utils";
-import {
-  obtenerRango,
-  obtenerAmplitud,
-  obtenerNumeroClases,
-} from "../utils/distribucion_frecuencia";
-
-// Types
-import { numeroClase, Rango } from "@/types";
-import { limites_clases, marca_clase } from "@/utils/limites_reales";
 import TablaGeneral from "@/components/TablaGeneral";
 import TablaTalloHoja from "@/components/TablaTalloHoja";
 import Image from "next/image";
+import { useTable } from "@/hooks/useTable";
 
 export default function Home() {
+  const {
+    data,
+    rango,
+    numeroClases,
+    amplitud,
+    talloHoja,
+    limitesReales,
+    limitesClase,
+    marca,
+    frecuencia,
+    setData,
+    listaOrdenada
+  } = useTable();
+
   // Manejar el archivo
   const [file, setFile] = useState(null);
-  const [data, setData] = useState<number[] | null>(null);
   const [error, setError] = useState<any>(null);
-
-  // Datos de la distribución de frecuencia
-  const [listaOrdenada, setListaOrdenada] = useState<number[] | null>(null);
-  const [rango, setRango] = useState<Rango | null>(null);
-  const [numeroClases, setNumeroClases] = useState<numeroClase | null>(null);
-  const [amplitud, setAmplitud] = useState<any>(null);
-
-  // Datos de la tabla general
-  const [limitesReales, setLimitesReales] = useState<any>(null);
-  const [limitesClase, setLimitesClase] = useState<any>(null);
-  const [marca, setMarca] = useState<any>(null);
-
-  // Datos de la tabla de tallo y hoja
-  const [talloHoja, setTalloHoja] = useState<any>(null);
-
-  // frecuencia
-  const [frecuencia, setFrecuencia] = useState<any>(null);
 
   const handleFileChange = (e: any) => {
     setFile(e.target.files[0]);
@@ -92,10 +78,6 @@ export default function Home() {
       });
 
       setData(json);
-      setListaOrdenada(ordenarLista(json));
-      setRango(obtenerRango(json));
-      setNumeroClases(obtenerNumeroClases(json));
-      setAmplitud(obtenerAmplitud(json));
 
       setError(null);
     } catch (err) {
@@ -103,49 +85,6 @@ export default function Home() {
       console.error(err);
     }
   };
-
-  useEffect(() => {
-    if (rango && amplitud && numeroClases) {
-      setLimitesReales(
-        limites_clases({
-          min: rango?.minimo,
-          max: rango?.maximo,
-          amplitud: Math.round(amplitud),
-          isReal: true,
-        }).limites
-      );
-      setLimitesClase(
-        limites_clases({
-          min: rango?.minimo,
-          max: rango?.maximo,
-          amplitud: Math.round(amplitud),
-          isReal: false,
-        }).limites
-      );
-      setMarca(
-        marca_clase({
-          min: rango?.minimo,
-          amplitud: Math.round(amplitud),
-          numero_clase: numeroClases?.clase,
-        })
-      );
-
-      setFrecuencia(
-        limites_clases({
-          min: rango?.minimo,
-          max: rango?.maximo,
-          amplitud: Math.round(amplitud),
-          isReal: false,
-        }).intervalos
-      );
-    }
-  }, [rango, amplitud, numeroClases]);
-
-  useEffect(() => {
-    if (listaOrdenada) {
-      setTalloHoja(obtenerTalloHoja(listaOrdenada));
-    }
-  }, [listaOrdenada]);
 
   return (
     <div className="flex items-center justify-center flex-col gap-16">
@@ -181,7 +120,7 @@ export default function Home() {
 
       {data && (
         <div className="flex flex-col justify-center gap-3">
-          <NumberTable numbers={data}>
+          <NumberTable>
             {rango && numeroClases && amplitud && (
               <Distribucion_frecuencia
                 maximo={rango.maximo}
@@ -202,21 +141,11 @@ export default function Home() {
         </div>
       )}
 
-      {limitesReales &&
-        limitesReales &&
-        marca &&
-        listaOrdenada &&
-        frecuencia && (
-          <div className="flex flex-col justify-center gap-3 ">
-            <TablaGeneral
-              lista={listaOrdenada}
-              limites_clases={limitesClase}
-              limites_reales={limitesReales}
-              marca_clase={marca}
-              f={frecuencia}
-            />
-          </div>
-        )}
+      {limitesReales && marca && listaOrdenada && frecuencia && limitesClase&& (
+        <div className="flex flex-col justify-center gap-3 ">
+          <TablaGeneral />
+        </div>
+      )}
     </div>
   );
 }
