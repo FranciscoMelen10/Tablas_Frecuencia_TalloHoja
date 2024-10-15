@@ -36,6 +36,7 @@ export default function Home() {
   // Manejar el archivo
   const [file, setFile] = useState(null);
   const [error, setError] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -92,18 +93,12 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    if (!file) {
-      setData(null);
-      setError(null);
-    }
-  }, [file]);
-
   const handleFileChange = (e: any) => {
     setFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e: any) => {
+    setIsLoading(true);
     e.preventDefault();
     if (!file) return;
 
@@ -142,6 +137,7 @@ export default function Home() {
       });
 
       setData(json);
+      setIsLoading(false);
 
       setError(null);
     } catch (err) {
@@ -150,81 +146,89 @@ export default function Home() {
     }
   };
 
-  return (
-    <div className="flex items-center justify-center flex-col gap-16">
-      <div className="absolute top-0 left-0 flex items-center gap-5 p-3">
-        <Image
-          src="/Logo.jpg"
-          width={80}
-          height={80}
-          alt="Logo"
-          loading="lazy"
-          className="rounded-full"
-        />
-        <h5 className="text-center text-xl">Creador: FranciscoMelen10</h5>
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="w-20 h-20 border-4 border-t-4 border-gray-200 rounded-full animate-spin"></div>
       </div>
-      <form
-        onSubmit={handleSubmit}
-        className="flex h-screen items-center justify-center flex-col"
-      >
-        <div className="flex items-center justify-center flex-col border-[1px] border-white rounded-xl p-2 gap-3">
-          <input
-            className=""
-            type="file"
-            onChange={handleFileChange}
-            accept=".xlsx, .xls"
+    );
+  } else {
+    return (
+      <div className="flex items-center justify-center flex-col gap-16">
+        <div className="absolute top-0 left-0 flex items-center gap-5 p-3">
+          <Image
+            src="/Logo.jpg"
+            width={80}
+            height={80}
+            alt="Logo"
+            loading="lazy"
+            className="rounded-full"
           />
-          <Button variant="default" className="rounded-xl" type="submit">
-            Subir y procesar
-          </Button>
+          <h5 className="text-center text-xl">Creador: FranciscoMelen10</h5>
         </div>
-      </form>
+        <form
+          onSubmit={handleSubmit}
+          className="flex h-screen items-center justify-center flex-col"
+        >
+          <div className="flex items-center justify-center flex-col border-[1px] border-white rounded-xl p-2 gap-3">
+            <input
+              className=""
+              type="file"
+              onChange={handleFileChange}
+              accept=".xlsx, .xls"
+            />
+            <Button variant="default" className="rounded-xl" type="submit">
+              Subir y procesar
+            </Button>
+          </div>
+        </form>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {data && (
-        <div className="flex flex-col justify-center gap-3">
-          <NumberTable>
-            {rango && numeroClases && amplitud && (
-              <Distribucion_frecuencia
-                maximo={rango.maximo}
-                minimo={rango.minimo}
-                resultado={rango.resultado}
-                total={numeroClases.clase}
-                amplitud={amplitud}
-              />
-            )}
-          </NumberTable>
-        </div>
-      )}
-
-      {talloHoja && (
-        <div className="flex flex-col justify-center gap-3">
-          <h1 className="text-2xl text-center">Tallo - Hoja</h1>
-          <TablaTalloHoja datos={talloHoja} />
-        </div>
-      )}
-
-      {limitesReales &&
-        marca &&
-        listaOrdenada &&
-        frecuencia &&
-        limitesClase && (
-          <div className="flex flex-col justify-center gap-3 ">
-            <TablaGeneral />
+        {data && (
+          <div className="flex flex-col justify-center gap-3">
+            <NumberTable>
+              {rango && numeroClases && amplitud && (
+                <Distribucion_frecuencia
+                  maximo={rango.maximo}
+                  minimo={rango.minimo}
+                  resultado={rango.resultado}
+                  total={numeroClases.clase}
+                  amplitud={amplitud}
+                />
+              )}
+            </NumberTable>
           </div>
         )}
-        
-      {data && (
-        <Button
-          variant="default"
-          className="rounded-xl"
-          onClick={handleGenerateExcel}
-          disabled={loading}
-        >
-          {loading ? "Generando..." : "Generar Excel"}
-        </Button>
-      )}
-    </div>
-  );
+
+        {talloHoja && (
+          <div className="flex flex-col justify-center gap-3">
+            <h1 className="text-2xl text-center">Tallo - Hoja</h1>
+            <TablaTalloHoja datos={talloHoja} />
+          </div>
+        )}
+
+        {limitesReales &&
+          marca &&
+          listaOrdenada &&
+          frecuencia &&
+          limitesClase && (
+            <div className="flex flex-col justify-center gap-3 ">
+              <TablaGeneral />
+            </div>
+          )}
+
+        {data && (
+          <Button
+            variant="default"
+            className="rounded-xl"
+            onClick={handleGenerateExcel}
+            disabled={loading}
+          >
+            {loading ? "Generando..." : "Generar Excel"}
+          </Button>
+        )}
+      </div>
+    );
+  }
 }

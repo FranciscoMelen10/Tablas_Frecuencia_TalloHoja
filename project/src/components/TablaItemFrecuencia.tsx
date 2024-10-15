@@ -11,12 +11,14 @@ type TablaItemFrecuenciaProps = {
     contador: number;
   }>;
   title: string;
+  total_frecuencia: number;
 };
 
 export default function TablaItemFrecuencia({
   datos = [],
   title,
   intervalos,
+  total_frecuencia,
 }: TablaItemFrecuenciaProps) {
   const { obtenerFrecuencias, obtenerFrecuenciaRelativa, marca } = useTable();
 
@@ -25,10 +27,13 @@ export default function TablaItemFrecuencia({
   let frecuencia_acumuladas: number[] = [];
   let frecuencia_relativa: number[] = [];
   let frecuencia_porcentual: number[] = [];
-  let total_XiFi = 0;
+  let frecuencia_XiFi: number[] = [];
+  let frecuencia_XiFi2 = [];
   let total = 0;
+  let total_XiFi = 0;
+  let total_XiFi2 = 0;
 
-  for (let i = 0; i < frecuencias.length; i++) {
+  for (let i = 0; i < total_frecuencia; i++) {
     if (i === 0) {
       frecuencia_acumuladas.push(frecuencias[i].contador);
     } else {
@@ -36,6 +41,7 @@ export default function TablaItemFrecuencia({
         frecuencias[i].contador + frecuencia_acumuladas[i - 1]
       );
     }
+
     frecuencia_relativa.push(frecuencias[i].contador / datos.length);
     frecuencia_porcentual.push((frecuencias[i].contador / datos.length) * 100);
     total_XiFi += frecuencias[i].contador * marca[i];
@@ -43,6 +49,16 @@ export default function TablaItemFrecuencia({
   }
 
   const promedio = total_XiFi / total;
+
+  for (let i = 0; i <= total_frecuencia; i++) {
+    if (intervalos[i]) {
+      frecuencia_XiFi.push(intervalos[i].contador * marca[i]);
+      frecuencia_XiFi2.push(
+        intervalos[i].contador * Math.pow(marca[i] - promedio, 2)
+      );
+      total_XiFi2 += intervalos[i].contador * Math.pow(marca[i] - promedio, 2);
+    }
+  }
 
   // Actualizar la frecuencia acumulada usando useEffect para evitar el ciclo infinito
   useEffect(() => {
@@ -104,12 +120,12 @@ export default function TablaItemFrecuencia({
 
       <div className="flex flex-col gap-2">
         <h5 className="text-center text-sm">Xi * Fi</h5>
-        {intervalos.map((data, index) => (
+        {frecuencia_XiFi.map((data, index) => (
           <p
             key={index}
             className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
           >
-            {data.contador * marca[index]}
+            {data}
           </p>
         ))}
         <p className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors">
@@ -119,39 +135,49 @@ export default function TablaItemFrecuencia({
 
       <div className="flex flex-col gap-2">
         <h5 className="text-center text-sm">(Xi - x̄)</h5>
-        {marca.map((data:number, index:number) => (
-          <p
-            key={index}
-            className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
-          >
-            {`(${data} - ${promedio.toFixed(2)})`}
-          </p>
-        ))}
+        {marca.map((data: number, index: number) => {
+          if (index < total_frecuencia) {
+            return (
+              <p
+                key={index}
+                className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
+              >
+                {`(${data} - ${promedio.toFixed(2)})`}
+              </p>
+            );
+          }
+        })}
       </div>
       <div className="flex flex-col gap-2">
         <h5 className="text-center text-sm">(Xi - x̄)²</h5>
-        {marca.map((data:number, index:number) => (
-          <p
-            key={index}
-            className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
-          >
-            {`(${(data - promedio).toFixed(2)})²`}
-          </p>
-        ))}
+        {marca.map((data: number, index: number) => {
+          if (index < total_frecuencia) {
+            return (
+              <p
+                key={index}
+                className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
+              >
+                {`(${(data - promedio).toFixed(2)})²`}
+              </p>
+            );
+          }
+        })}
       </div>
 
       <div className="flex flex-col gap-2">
         <h5 className="text-center text-sm">Fi(Xi - x̄)²</h5>
-        {marca.map((data:number, index:number) => (
+        {frecuencia_XiFi2.map((data: number, index: number) => (
           <p
             key={index}
             className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors"
           >
-            {`${(intervalos[index].contador * Math.pow(data - promedio, 2)).toFixed(2)}`}
+            {`${data.toFixed(2)}`}
           </p>
         ))}
+        <p className="bg-gray-700 rounded-xl p-2 text-center font-medium hover:bg-gray-600 transition-colors">
+          {`Total: ${total_XiFi2.toFixed(2)}`}
+        </p>
       </div>
-
     </>
   );
 }
