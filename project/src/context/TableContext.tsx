@@ -1,13 +1,21 @@
 "use client";
-import { numeroClase, Rango } from "@/types";
+import { deltaProps, numeroClase, Rango } from "@/types";
 import ordenarLista, { obtenerTalloHoja } from "@/utils";
 import {
   obtenerAmplitud,
   obtenerNumeroClases,
   obtenerRango,
 } from "@/utils/distribucion_frecuencia";
+import {
+  obtenerCoeficienteVariacion,
+  obtenerDesviacionEstandar,
+  obtenerFrecuenciaMayor,
+  obtenerMediana,
+  obtenerModa,
+  obtenerVarianza,
+} from "@/utils/medidas_dispersion";
 import { limites_clases, marca_clase } from "@/utils/limites_reales";
-import { createContext } from "react";
+import { createContext, use } from "react";
 import { useEffect, useState } from "react";
 
 export const TableContext = createContext<any>(null);
@@ -31,18 +39,53 @@ export const TableProvider = ({ children }: any) => {
 
   // frecuencia
   const [frecuencia, setFrecuencia] = useState<any>(null);
+
   const [frecuenciaAcumulada, setFrecuenciaAcumulada] = useState<any>(null);
   const [frecuenciaRelativa, setFrecuenciaRelativa] = useState<any>(null);
 
+  // Frecuencia Xi * Fi
   const [frecuencia_XiFi, setFrecuencia_XiFi] = useState<any>(null);
+
+  // Frecuencia Xi * Fi^2
   const [frecuencia_XiFi2, setFrecuencia_XiFi2] = useState<any>(null);
+
+  // Total de frecuencia Xi * Fi^2
   const [total_frecuencia_XiFi2, setTotal_frecuencia_XiFi2] = useState<
     number | null
   >(null);
 
+  /*  
+    Logica de la medidas de dispersión y tendencia central
+  */
+
+  const [frecuenciaMayor, setFrecuenciaMayor] = useState<deltaProps | null>(
+    null
+  );
+
+  // Promedio
   const [promedio, setPromedio] = useState<number | null>(null);
-  const [delta1, setDelta1] = useState<number | null>(null);
-  const [delta2, setDelta2] = useState<number | null>(null);
+
+  // Indice de la tabla con mayor frecuencia
+  const [delta, setDelta] = useState<number>(0);
+
+  // delta1: Diferencia entre la frecuencia acumulada y el índice anterior
+  const [delta1, setDelta1] = useState<number>(0);
+
+  // delta2: Diferencia entre la frecuencia acumulada y el índice siguiente
+  const [delta2, setDelta2] = useState<number>(0);
+
+  // Indice de la tabla de frecuencia para el cálculo de la mediana
+  const [indice, setIndice] = useState<number>(0);
+
+  const [moda, setModa] = useState<number | null>(null);
+  const [mediana, setMediana] = useState<number | null>(null);
+  const [varianza, setVarianza] = useState<number | null>(null);
+  const [desviacionEstandar, setDesviacionEstandar] = useState<number | null>(
+    null
+  );
+  const [coeficienteVariacion, setCoeficienteVariacion] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
     if (data) {
@@ -101,6 +144,79 @@ export const TableProvider = ({ children }: any) => {
     }
   }, [listaOrdenada]);
 
+  useEffect(() => {
+    if (frecuencia) {
+      setFrecuenciaMayor(obtenerFrecuenciaMayor(frecuencia));
+    }
+  }, [frecuencia]);
+
+  useEffect(() => {
+    if (frecuenciaMayor) {
+      setDelta(frecuenciaMayor.frecuencia_mayor);
+      setDelta1(
+        frecuenciaMayor.frecuencia_mayor - frecuenciaMayor.frecuencia_anterior
+      );
+      setDelta2(
+        frecuenciaMayor.frecuencia_mayor - frecuenciaMayor.frecuencia_superior
+      );
+      setIndice(frecuenciaMayor.indice);
+    }
+  }, [frecuenciaMayor]);
+
+  useEffect(() => {
+    if (
+      delta1 >= 0 &&
+      delta2 >= 0 &&
+      indice >= 0 &&
+      amplitud &&
+      total_frecuencia_XiFi2
+    ) {
+      setModa(
+        obtenerModa({
+          amplitud: amplitud,
+          delta1,
+          delta2,
+          limite_inferior: frecuencia[indice].limite_inferior - 0.5,
+        })
+      );
+
+      // Mediana
+      setMediana(
+        obtenerMediana({
+          amplitud: amplitud,
+          limite_inferior: frecuencia[indice].limite_inferior - 0.5,
+          n: data.length,
+          frecuencia_acumulada_anterior: frecuenciaAcumulada[indice - 1]
+            ? frecuenciaAcumulada[indice - 1]
+            : 0,
+          frecuencia: frecuencia[indice].contador,
+        })
+      );
+
+      // Varianza
+      setVarianza(obtenerVarianza({ n: data.length, total_frecuencia_XiFi2 }));
+    }
+  }, [delta1, delta2, indice]);
+
+  useEffect(() => {
+    if (varianza && promedio) {
+      // Desviación estándar
+      setDesviacionEstandar(obtenerDesviacionEstandar({ varianza }));
+    }
+  }, [varianza]);
+
+  useEffect(() => {
+    if (desviacionEstandar && promedio) {
+      // Coeficiente de variación
+      setCoeficienteVariacion(
+        obtenerCoeficienteVariacion({
+          desviacion_estandar: desviacionEstandar,
+          promedio,
+        })
+      );
+    }
+  }, [desviacionEstandar]);
+
   // Funciones para actualizar frecuencias
   const obtenerFrecuencias = (data: any) => setFrecuenciaAcumulada(data);
   const obtenerFrecuenciaRelativa = (data: any) => setFrecuenciaRelativa(data);
@@ -134,9 +250,14 @@ export const TableProvider = ({ children }: any) => {
         promedio,
         setPromedio,
         delta1,
-        setDelta1,
         delta2,
-        setDelta2,
+        indice,
+        moda,
+        delta,
+        mediana,
+        varianza,
+        desviacionEstandar,
+        coeficienteVariacion,
       }}
     >
       {children}

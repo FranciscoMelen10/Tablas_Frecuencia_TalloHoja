@@ -15,6 +15,7 @@ import TablaGeneral from "@/components/TablaGeneral";
 import TablaTalloHoja from "@/components/TablaTalloHoja";
 import Image from "next/image";
 import { useTable } from "@/hooks/useTable";
+import MedidaDispersion from "@/components/MedidaDispersion";
 
 export default function Home() {
   const {
@@ -32,7 +33,16 @@ export default function Home() {
     frecuenciaAcumulada,
     frecuenciaRelativa,
     frecuencia_XiFi,
-    frecuencia_XiFi2
+    frecuencia_XiFi2,
+    delta1,
+    delta2,
+    indice,
+    moda,
+    mediana,
+    desviacionEstandar,
+    coeficienteVariacion,
+    promedio,
+    varianza,
   } = useTable();
 
   // Manejar el archivo
@@ -57,8 +67,8 @@ export default function Home() {
           frecuenciaAcumulada: frecuenciaAcumulada,
           frecuenciaRelativa: frecuenciaRelativa,
           frecuencia: frecuencia,
-          frecuencia_XiFi:frecuencia_XiFi,
-          frecuencia_XiFi2:frecuencia_XiFi2,
+          frecuencia_XiFi: frecuencia_XiFi,
+          frecuencia_XiFi2: frecuencia_XiFi2,
         }),
       });
 
@@ -221,6 +231,13 @@ export default function Home() {
               <TablaGeneral />
             </div>
           )}
+
+        {moda &&
+          mediana &&
+          desviacionEstandar &&
+          coeficienteVariacion &&
+          promedio &&
+          varianza && <MedidaDispersion />}
 
         {data && (
           <Button

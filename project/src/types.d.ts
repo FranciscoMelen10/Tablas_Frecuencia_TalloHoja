@@ -41,16 +41,47 @@ export interface TablaGeneralProps {
   limites_reales: (string | number)[];
   limites_clases: (string | number)[];
   marca_clase: (string | number)[];
-  f: Array<{
-    limite_inferior: number;
-    limite_superior: number;
-    contador: number;
-  }>;
+  f: intervalos;
 }
-
 
 export type TablaItemProps = {
   datos: (string | number)[];
   title: string;
   total: number;
 };
+
+export interface deltaProps {
+  frecuencia_mayor: number;
+  frecuencia_anterior: number;
+  frecuencia_superior: number;
+  indice: number;
+}
+
+export interface ModaProps {
+  amplitud: number;
+  delta1: number;
+  delta2: number;
+  limite_inferior: number;
+}
+
+export interface MedianaProps {
+  amplitud: number;
+  limite_inferior: number;
+  n: number;
+  frecuencia_acumulada_anterior: number;
+  frecuencia: any;
+}
+
+export interface VarianzaProps {
+  n: number;
+  total_frecuencia_XiFi2: number;
+}
+
+export interface DesviacionEstandarProps {
+  varianza: number;
+}
+
+export interface CoeficienteVariacionProps {
+  desviacion_estandar: number;
+  promedio: number;
+}
