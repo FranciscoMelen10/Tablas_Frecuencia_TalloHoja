@@ -1,8 +1,4 @@
-type TablaItemProps = {
-  datos: (string | number)[];
-  title: string;
-  total: number;
-};
+import { TablaItemProps } from "@/types";
 
 export default function TablaItem({
   datos = [],

@@ -11,7 +11,18 @@ export async function POST(req) {
       frecuenciaRelativa,
       frecuenciaAcumulada,
       frecuencia,
+      frecuencia_XiFi,
+      frecuencia_XiFi2,
     } = await req.json(); // Aquí se obtienen los datos enviados por el frontend
+
+    // console.log("limitesReales", limitesReales);
+    // console.log("limitesClase", limitesClase);
+    // console.log("marca", marca);
+    // console.log("frecuenciaRelativa", frecuenciaRelativa);
+    // console.log("frecuenciaAcumulada", frecuenciaAcumulada);
+    // console.log("frecuencia", frecuencia);
+    // console.log("frecuencia_XiFi", frecuencia_XiFi);
+    // console.log("frecuencia_XiFi2", frecuencia_XiFi2);
 
     // Combinar los datos en un solo objeto para el Excel
     const datos = limitesReales.map((_, index) => ({
@@ -24,6 +35,9 @@ export async function POST(req) {
       "Frecuencia Porcentual": `${(frecuenciaRelativa[index] * 100).toFixed(
         2
       )}%`,
+      "(Xi - x̄)": frecuencia_XiFi[index],
+      "Fi(Xi - x̄)²": frecuencia_XiFi2[index],
+      "": "", // Espacio en blanco para separar los datos
     }));
 
     // Crear el libro de trabajo (workbook) y la hoja (worksheet) a partir de los datos enviados

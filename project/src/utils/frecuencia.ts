@@ -1,11 +1,6 @@
-export const obtenerFrecuencia = (
-  lista: number[],
-  intervalos: Array<{
-    limite_inferior: number;
-    limite_superior: number;
-    contador: number;
-  }>
-) => {
+import { intervalos } from "@/types";
+
+export const obtenerFrecuencia = (lista: number[], intervalos: intervalos) => {
   // Contar cuántos números caen en cada intervalo
   intervalos.forEach((intervalo) => {
     intervalo.contador = 0; // Inicializa el contador para cada intervalo
@@ -22,5 +17,7 @@ export const obtenerFrecuencia = (
     });
   });
 
-  return intervalos
+  return intervalos;
 };
+
+

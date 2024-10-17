@@ -19,7 +19,7 @@ export const TableProvider = ({ children }: any) => {
   const [listaOrdenada, setListaOrdenada] = useState<number[] | null>(null);
   const [rango, setRango] = useState<Rango | null>(null);
   const [numeroClases, setNumeroClases] = useState<numeroClase | null>(null);
-  const [amplitud, setAmplitud] = useState<any>(null);
+  const [amplitud, setAmplitud] = useState<number | null>(null);
 
   // Datos de la tabla general
   const [limitesReales, setLimitesReales] = useState<any>(null);
@@ -34,12 +34,27 @@ export const TableProvider = ({ children }: any) => {
   const [frecuenciaAcumulada, setFrecuenciaAcumulada] = useState<any>(null);
   const [frecuenciaRelativa, setFrecuenciaRelativa] = useState<any>(null);
 
+  const [frecuencia_XiFi, setFrecuencia_XiFi] = useState<any>(null);
+  const [frecuencia_XiFi2, setFrecuencia_XiFi2] = useState<any>(null);
+  const [total_frecuencia_XiFi2, setTotal_frecuencia_XiFi2] = useState<
+    number | null
+  >(null);
+
+  const [promedio, setPromedio] = useState<number | null>(null);
+  const [delta1, setDelta1] = useState<number | null>(null);
+  const [delta2, setDelta2] = useState<number | null>(null);
+
   useEffect(() => {
     if (data) {
       setListaOrdenada(ordenarLista(data));
       setRango(obtenerRango(data));
       setNumeroClases(obtenerNumeroClases(data));
       setAmplitud(obtenerAmplitud(data));
+    } else {
+      setListaOrdenada(null);
+      setRango(null);
+      setNumeroClases(null);
+      setAmplitud(null);
     }
   }, [data]);
 
@@ -86,9 +101,11 @@ export const TableProvider = ({ children }: any) => {
     }
   }, [listaOrdenada]);
 
-    // Funciones para actualizar frecuencias
-    const obtenerFrecuencias = (data: any) => setFrecuenciaAcumulada(data);
-    const obtenerFrecuenciaRelativa = (data: any) => setFrecuenciaRelativa(data);
+  // Funciones para actualizar frecuencias
+  const obtenerFrecuencias = (data: any) => setFrecuenciaAcumulada(data);
+  const obtenerFrecuenciaRelativa = (data: any) => setFrecuenciaRelativa(data);
+  const obtenerFrecuenciaXiFi = (data: any) => setFrecuencia_XiFi(data);
+  const obtenerFrecuenciaXiFi2 = (data: any) => setFrecuencia_XiFi2(data);
 
   return (
     <TableContext.Provider
@@ -108,6 +125,18 @@ export const TableProvider = ({ children }: any) => {
         obtenerFrecuencias,
         obtenerFrecuenciaRelativa,
         frecuenciaRelativa,
+        obtenerFrecuenciaXiFi,
+        obtenerFrecuenciaXiFi2,
+        setTotal_frecuencia_XiFi2,
+        frecuencia_XiFi,
+        frecuencia_XiFi2,
+        total_frecuencia_XiFi2,
+        promedio,
+        setPromedio,
+        delta1,
+        setDelta1,
+        delta2,
+        setDelta2,
       }}
     >
       {children}

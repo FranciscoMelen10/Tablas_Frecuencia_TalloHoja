@@ -2,9 +2,9 @@ type DatosTalloHoja = {
     [key: string]: number[]; // Claves string y valores como arreglos de números
   };
   
-  export default function TablaTalloHoja({ datos = {} }: { datos: DatosTalloHoja }) {
+  export default function TablaTalloHoja({ datos }: { datos: DatosTalloHoja }) {
     return (
-      <div className="grid grid-cols-4 gap-2 p-4 max-w-[500px] bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl">
+      <div className="grid grid-cols-5 gap-2 p-4 max-w-[1200px] bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl select-none">
         {Object.keys(datos).map((clave, index) => (
           <div
             key={index}

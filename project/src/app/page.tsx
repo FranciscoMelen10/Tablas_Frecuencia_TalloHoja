@@ -31,6 +31,8 @@ export default function Home() {
     listaOrdenada,
     frecuenciaAcumulada,
     frecuenciaRelativa,
+    frecuencia_XiFi,
+    frecuencia_XiFi2
   } = useTable();
 
   // Manejar el archivo
@@ -55,6 +57,8 @@ export default function Home() {
           frecuenciaAcumulada: frecuenciaAcumulada,
           frecuenciaRelativa: frecuenciaRelativa,
           frecuencia: frecuencia,
+          frecuencia_XiFi:frecuencia_XiFi,
+          frecuencia_XiFi2:frecuencia_XiFi2,
         }),
       });
 

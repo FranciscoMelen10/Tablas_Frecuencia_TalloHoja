@@ -1,20 +1,11 @@
-// Comming soon
-
-import { LimitesClases, MarcaClase } from "@/types";
+import { LimitesClases, LimitesClasesProps, MarcaClase } from "@/types";
 
 export const limites_clases = ({
   min,
   max,
   amplitud,
   isReal = false,
-}: LimitesClases): {
-  limites: string[];
-  intervalos: Array<{
-    limite_inferior: number;
-    limite_superior: number;
-    contador: number;
-  }>;
-} => {
+}: LimitesClasesProps): LimitesClases => {
   // Estructura: [ min - 0.5 - min + amplitud - 0.5 ])
 
   // Si es una clase real, se resta 0.5 a los limites
@@ -22,11 +13,7 @@ export const limites_clases = ({
   const real = isReal ? 0.5 : 0;
 
   let limites: string[] = [];
-  let intervalos: Array<{
-    limite_inferior: number;
-    limite_superior: number;
-    contador: number;
-  }> = [];
+  let intervalos: Omit<LimitesClases, "limites">["intervalos"] = [];
   let limite_inferior = min;
   let limite_superior = min + amplitud;
 

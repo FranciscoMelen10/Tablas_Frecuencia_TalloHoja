@@ -12,11 +12,22 @@ export interface numeroClase {
 export type Distribucion_frecuencia_Props = Rango &
   Omit<numeroClase, "clase"> & { amplitud: number };
 
-export interface LimitesClases {
+export interface LimitesClasesProps {
   min: number;
   max: number;
   amplitud: number;
   isReal: boolean;
+}
+
+export type intervalos = Array<{
+  limite_inferior: number;
+  limite_superior: number;
+  contador: number;
+}>;
+
+export interface LimitesClases {
+  limites: string[];
+  intervalos: intervalos;
 }
 
 export interface MarcaClase {
@@ -36,3 +47,10 @@ export interface TablaGeneralProps {
     contador: number;
   }>;
 }
+
+
+export type TablaItemProps = {
+  datos: (string | number)[];
+  title: string;
+  total: number;
+};
